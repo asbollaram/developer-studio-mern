@@ -4,14 +4,13 @@ const jwt = require('jsonwebtoken');
 const devuser402 = require('./devusermodel');
 const middleware = require('./middleware');
 const reviewmodel = require('./reviewmodel');
+const dotenv = require('dotenv');
 const cors = require('cors');
-
+dotenv.config();
 const app = express();
 
 mongoose
-  .connect(
-    'mongodb+srv://mernpro402:welcome123$@cluster0.17hwg.mongodb.net/?retryWrites=true&w=majority'
-  )
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log('DB connected...'));
 
 app.use(express.json());
@@ -72,7 +71,7 @@ app.post('/login', async (req, res) => {
         id: exist.id,
       },
     };
-    jwt.sign(playload, 'jwtPassword', { expiresIn: 36000000 }, (err, token) => {
+    jwt.sign(playload, 'jwtPassword', process.env.JWT_SECRET,{ expiresIn: '30d' }, (err, token) => {
       if (err) throw err;
       return res.json({ token });
     });
